@@ -7,14 +7,23 @@ const { exec } = require("child_process");
 
 const program = new Command();
 async function createProject(name) {
-  const repoUrl = "https://github.com/phantrung12/base-proj.git";
+  const repoUrl = "https://github.com/phantrung12/react-boilerplate-demo";
   const projectPath = path.join(process.cwd(), name);
 
-  // console.log(`Cloning repository into ${projectPath}...`);
+  console.log(`Creating Project: ${name}...`);
 
   try {
     // Clone repository vào thư mục `projectPath`
     await git().clone(repoUrl, projectPath);
+
+    // Xóa thư mục .git để ngắt liên kết với repository gốc
+    const gitFolderPath = path.join(projectPath, ".git");
+    if (fs.existsSync(gitFolderPath)) {
+      fs.rmSync(gitFolderPath, { recursive: true, force: true });
+      console.log(
+        chalk.green("Removed .git folder to unlink from original repository.")
+      );
+    }
 
     // Cài đặt dependencies
     console.log("Installing dependencies...");
